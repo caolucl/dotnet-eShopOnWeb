@@ -39,9 +39,11 @@ jobs:
         echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
       shell: bash
 
-    
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+
     - name: Tag the image for the private registry
       run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
     
     - name: Create a latest image as well
-      run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_
+      run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:latest
