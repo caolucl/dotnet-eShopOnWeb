@@ -2,6 +2,10 @@ name: eShopOnWeb Build and Test
 
 on: [push, pull_request, workflow_dispatch]
 
+env:
+  DOCKER_IMAGE_NAME: eshopweb
+  DOCKER_REGISTRY_URL: caolucl
+
 jobs:
   build:
 
@@ -20,3 +24,18 @@ jobs:
     
     - name: Test with dotnet
       run: dotnet test ./eShopOnWeb.sln --configuration Release
+    - name: Get the release version
+      # i.e.: release/1.0.0 -> 1.0.0
+      id: strip-branch-name
+      run: |
+        release_version=$(echo "${{ github.ref }}" | sed 's/refs\/heads\/.*\///')
+        echo "Building release version $release_version"
+        echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
+      shell: bash
+
+    
+    - name: Tag the image for the private registry
+      run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
+    
+    - name: Create a latest image as well
+      run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_
