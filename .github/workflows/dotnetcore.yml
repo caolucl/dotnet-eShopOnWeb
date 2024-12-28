@@ -40,7 +40,7 @@ jobs:
       shell: bash
 
     - name: Build the Docker image
-      run: docker build ./src/Web --file Dockerfile --tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+      run: docker build -f src/Web/Dockerfile . --tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION
 
     - name: Tag the image for the private registry
       run: docker tag $DOCKER_IMAGE_NAME:$RELEASE_VERSION $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:$RELEASE_VERSION
